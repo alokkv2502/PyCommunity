@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python Terminal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #282c34; /* dark background */
+            color: #abb2bf; /* light grey text */
+            font-family: 'Source Code Pro', monospace;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #terminalInput {
+            width: 80%;
+            background: #282c34;
+            border: 1px solid #abb2bf;
+            padding: 10px;
+            box-sizing: border-box;
+            color: #abb2bf;
+            margin-bottom: 10px;
+        }
+        #terminalOutput {
+            width: 80%;
+            background: #282c34;
+            border: 1px solid #abb2bf;
+            padding: 10px;
+            box-sizing: border-box;
+            color: #abb2bf;
+            height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap; /* Ensures the formatting and spacing of output */
+        }
+        button {
+            background-color: #61afef; /* blue */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #528bca; /* darker blue */
+        }
+    </style>
+</head>
+<body>
+    <textarea id="terminalInput" placeholder="Type your Python code here..."></textarea> <!-- Changed from input to textarea -->
+    <button id="executeCode">Run Code</button> <!-- This is the correct ID to match the JS below -->
+    <pre id="terminalOutput"></pre> <!-- Removed <code> tag for simplicity -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script>
+        // On page load
+        $(document).ready(function() {
+            // Check if URL parameter 'code' exists
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('code')) {
+                var code = urlParams.get('code');
+                // Populate the Python terminal with the code
+                $('#pythonTerminalInput').val(decodeURIComponent(code));
+            }
+        });
+    </script>
+    <script>
+        document.getElementById('executeCode').addEventListener('click', async function() { // Fixed the ID here
+            const code = document.getElementById('terminalInput').value;
+            const response = await fetch('/run_code/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add your CSRF token handling here if necessary
+                },
+                body: JSON.stringify({ code: code })
+            });
+            const result = await response.json();
+            const outputElement = document.getElementById('terminalOutput');
+            outputElement.textContent = result.output; // Set the output text
+            Prism.highlightElement(outputElement); // Apply syntax highlighting to the output
+        });
+    </script>
+
+
+</body>
+</html>

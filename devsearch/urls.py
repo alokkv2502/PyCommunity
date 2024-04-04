@@ -5,10 +5,14 @@ from django.conf.urls.static import static
 
 from django.contrib.auth import views as auth_views
 
+from projects import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/', include('projects.urls')),
+    path('python-terminal/', views.python_terminal, name='python-terminal'),
+    #path('python-terminal/', views.python_terminal, name='python-terminal'),
+    path('run_code/', views.run_code, name='run_code'),
     path('', include('users.urls')),
     path('api/', include('api.urls')),
 

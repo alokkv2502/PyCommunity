@@ -10,4 +10,7 @@ urlpatterns = [
     path('update-project/<str:pk>/', views.updateProject, name="update-project"),
 
     path('delete-project/<str:pk>/', views.deleteProject, name="delete-project"),
+
+    path('terminal/', views.python_terminal, name='python_terminal'),
+    path('run_code/', views.run_code, name='run_code'),
 ]

@@ -1,8 +1,6 @@
 {% extends 'main.html' %}
 {% block content %}
 
-
-
 <!-- Main Section -->
 <main class="formPage my-xl">
     <div class="content-box">
@@ -16,27 +14,32 @@
                 {% for field in form %}
                 <!-- Input:Text -->
                 <div class="form__field">
-                    <label for="formInput#text">{{field.label}}</label>
-                    {{field}}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
                 </div>
                 {% endfor %}
 
+                <!-- Field for submitting dataset -->
                 <div class="form__field">
-                    {% for tag in project.tags.all %}
-                    <div class="project-tag tag tag--pill tag--main" data-tag="{{tag.id}}"
-                        data-project="{{project.id}}">{{tag.name}} &#215;</div>
-                    {% endfor %}
+                    <label for="id_dataset">Submit your dataset</label>
+                    <input type="file" name="dataset" id="id_dataset" class="input">
+                    <small class="form-text text-muted">Attach your dataset file here.</small>
                 </div>
 
+                <!-- Field for submitting code -->
                 <div class="form__field">
-                    <label for="formInput#text">Tags</label>
-                    <textarea class="input" name="newtags" placeholder="Add tags here..."></textarea>
+                    <label for="id_code">Submit your code</label>
+                    <textarea name="code" class="input">{{ form.instance.code }}</textarea>
+                    <small class="form-text text-muted">Paste your source code.</small>
                 </div>
-                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Submit" />
+
+                <input class="btn btn--sub btn--lg my-md" type="submit" value="Submit" />
             </form>
         </div>
     </div>
 </main>
-
 
 {% endblock %}
