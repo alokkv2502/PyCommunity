@@ -1,0 +1,45 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<!-- Main Section -->
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <a class="backButton" href="{% url 'account' %}"><i class="im im-angle-left"></i> Return to Account</a>
+            <br>
+
+            <form class="form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Loop through the fields in the form -->
+                {% for field in form %}
+                <div class="form__field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <!-- Additional field specific to code submission -->
+                <div class="form__field">
+                    <label for="id_code_file">Upload your code file</label>
+                    <input type="file" name="code_file" id="id_code_file" class="input">
+                    <small class="form-text text-muted">Attach your code file here (optional).</small>
+                </div>
+
+                <!-- Textarea for submitting code directly -->
+                <div class="form__field">
+                    <label for="id_code">Code Snippet</label>
+                    <textarea name="code" id="id_code" class="input" rows="10">{{ form.instance.code }}</textarea>
+                    <small class="form-text text-muted">Paste your source code here if not uploading a file.</small>
+                </div>
+
+                <input class="btn btn--sub btn--lg my-md" type="submit" value="Submit" />
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE
 from users.models import Profile
+from django.conf import settings
 # Create your models here.
 
 
@@ -86,9 +87,12 @@ class Tag(models.Model):
     
 
 class CodeSnippet(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    code = models.TextField()
-
+    
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='code_snippets')
+    title = models.CharField(max_length=100)
+    description = models.TextField(default='')
+    file = models.FileField(upload_to='code_snippets/', null=True, blank=True)  # Assuming you're using a FileField
+    code = models.TextField() 
 
 class Submission(models.Model):
     title = models.CharField(max_length=255)

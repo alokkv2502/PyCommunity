@@ -2,7 +2,7 @@ from django.db.models.base import Model
 from django.forms import ModelForm, widgets
 from django import forms
 from .models import Project, Review
-
+from .models import CodeSnippet
 
 class ProjectForm(ModelForm):
     class Meta:
@@ -41,3 +41,7 @@ class ReviewForm(ModelForm):
 
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'input'})
+class CodeForm(forms.ModelForm):
+    class Meta:
+        model = CodeSnippet
+        fields = ('title', 'description', 'code', 'file') 

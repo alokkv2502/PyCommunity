@@ -94,8 +94,8 @@ def userAccount(request):
 
     skills = profile.skill_set.all()
     projects = profile.project_set.all()
-
-    context = {'profile': profile, 'skills': skills, 'projects': projects}
+    code_snippets = request.user.code_snippets.all()
+    context = {'profile': profile, 'skills': skills, 'projects': projects,'code_snippets': code_snippets,}
     return render(request, 'users/account.html', context)
 
 

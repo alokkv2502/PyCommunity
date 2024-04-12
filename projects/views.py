@@ -7,13 +7,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Project, Tag
 from django.http import JsonResponse
-from .forms import ProjectForm, ReviewForm
+from .forms import ProjectForm, ReviewForm,CodeForm
 from .utils import searchProjects, paginateProjects
 from subprocess import Popen, PIPE, STDOUT,TimeoutExpired
 from .models import CodeSnippet
 from django.views.decorators.csrf import csrf_exempt
 from .models import Submission
 from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404
 def projects(request):
     projects, search_query = searchProjects(request)
     custom_range, projects = paginateProjects(request, projects, 6)
@@ -163,6 +164,55 @@ def deleteProject(request, pk):
     context = {'object': project}
     return render(request, 'delete_template.html', context)
 
+
+@login_required(login_url="login")
+def createCode(request):
+    profile = request.user.profile
+    form = CodeForm()
+    
+    if request.method == 'POST':
+        form = CodeForm(request.POST, request.FILES)
+        if form.is_valid():
+            code_snippet = form.save(commit=False)
+            code_snippet.user = request.user 
+            code_snippet.save()
+            messages.success(request, 'Code snippet added successfully!')
+            return redirect('account')
+
+    context = {'form': form}
+    return render(request, "projects/codeForm.html", context)
+
+
+@login_required(login_url="login")
+def updateCode(request, pk):
+    profile = request.user.profile
+    code_snippet = profile.code_set.get(id=pk)
+    
+    form = CodeForm(instance=code_snippet)
+    
+    if request.method == 'POST':
+        form = CodeForm(request.POST, request.FILES, instance=code_snippet)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Code snippet updated successfully!')
+            return redirect('account')
+
+    context = {'form': form, 'code_snippet': code_snippet}
+    return render(request, "projects/codeForm.html", context)
+
+
+@login_required(login_url="login")
+def deleteCode(request, pk):
+    profile = request.user.profile
+    code_snippet = profile.code_set.get(id=pk)
+    if request.method == 'POST':
+        code_snippet.delete()
+        messages.success(request, 'Code snippet deleted successfully!')
+        return redirect('account')
+
+    context = {'object': code_snippet}
+    return render(request, 'delete_template.html', context)
+
 @login_required
 def get_user_code(request):
     # Get the user's latest code snippet
@@ -172,3 +222,15 @@ def get_user_code(request):
         return JsonResponse({'code': code_snippet.code}, status=200)
     else:
         return JsonResponse({'error': 'No code found.'}, status=404)
+    
+def code_list(request):
+    code_snippets = CodeSnippet.objects.all()  # Or any other logic to get the code snippets
+    context = {'code_snippets': code_snippets}
+    return render(request, 'projects/code_list.html', context)
+
+def single_code(request, pk):
+    code_snippet = get_object_or_404(CodeSnippet, pk=pk)
+    context = {
+        'code_snippet': code_snippet
+    }
+    return render(request, 'projects/single_code.html', context)

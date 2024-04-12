@@ -1,0 +1,29 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Main Section -->
+<main class="singleCode my-md">
+    <div class="container">
+        <div class="layout">
+            <div class="column column--1of3">
+                <!-- Side Section for Additional Actions or Information -->
+                <button class="button--styled" onclick="window.location.href='/python-terminal';">Run Code</button>
+                <!-- You can add more buttons or information related to the code snippet here -->
+            </div>
+            <div class="column column--2of3">
+                <!-- Code Snippet Display -->
+                <div class="card">
+                    <div class="card__body">
+                        <h2 class="card__title">{{ code_snippet.title }}</h2>
+                        <pre>{{ code_snippet.code }}</pre>
+                        <!-- Add more details you want to display about the code -->
+                    </div>
+                </div>
+                <!-- Optionally Add Comments and Reviews Section Here -->
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

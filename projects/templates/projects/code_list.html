@@ -1,0 +1,52 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<!-- Main Section -->
+<main class="codes">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>Search for <span>Code</span></h2>
+            </div>
+
+            <div class="hero-section__search">
+                <form id='searchForm' class="form" action="{% url 'code-list' %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search By Code Title</label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            placeholder="Search by Code Title" value="{{ search_query }}" />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Search Result: CodeList -->
+    <section class="codesList">
+        <div class="container">
+            <div class="grid grid--three">
+                {% for code_snippet in code_snippets %}
+                <div class="column">
+                    <div class="card code">
+                        <a href="{% url 'single-code' code_snippet.id %}"> <!-- Make sure 'single-code' is the name of your detail view url -->
+                            <img class="code__thumbnail" src="{{ code_snippet.imageURL }}" alt="{{ code_snippet.title }}">
+                            <div class="card__body">
+                                <h3 class="code__title">{{ code_snippet.title }}</h3>
+                                <p class="code__description">{{ code_snippet.description|truncatechars:100 }}</p>
+                                <!-- Add a link or button if you want to make a separate clickable area -->
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No code submissions available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {% include 'pagination.html' with queryset=code_snippets custom_range=custom_range %}
+</main>
+
+{% endblock %}
