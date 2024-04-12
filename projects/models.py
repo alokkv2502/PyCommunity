@@ -88,3 +88,16 @@ class Tag(models.Model):
 class CodeSnippet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     code = models.TextField()
+
+
+class Submission(models.Model):
+    title = models.CharField(max_length=255)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    vote_ratio = models.IntegerField(default=0)
+    vote_total = models.IntegerField(default=0)
+    tags = models.ManyToManyField('Tag')
+
+    def __str__(self):
+        return self.title
+
+

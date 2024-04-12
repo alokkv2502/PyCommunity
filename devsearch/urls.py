@@ -7,6 +7,7 @@ from django.contrib.auth import views as auth_views
 
 from projects import views
 
+from projects.views import submission_list
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/', include('projects.urls')),
@@ -15,7 +16,7 @@ urlpatterns = [
     path('run_code/', views.run_code, name='run_code'),
     path('', include('users.urls')),
     path('api/', include('api.urls')),
-
+    path('submissions/', submission_list, name='submissions'),
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="reset_password.html"),
          name="reset_password"),
 

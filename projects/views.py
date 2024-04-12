@@ -12,6 +12,8 @@ from .utils import searchProjects, paginateProjects
 from subprocess import Popen, PIPE, STDOUT,TimeoutExpired
 from .models import CodeSnippet
 from django.views.decorators.csrf import csrf_exempt
+from .models import Submission
+from django.core.paginator import Paginator
 def projects(request):
     projects, search_query = searchProjects(request)
     custom_range, projects = paginateProjects(request, projects, 6)
@@ -20,6 +22,28 @@ def projects(request):
                'search_query': search_query, 'custom_range': custom_range}
     return render(request, 'projects/projects.html', context)
 
+def submission_list(request):
+    search_query = request.GET.get('search_query', '')
+    if search_query:
+        submissions = Submission.objects.filter(title__icontains=search_query)
+    else:
+        submissions = Submission.objects.all()
+    context = {
+        'submissions': submissions,
+        'search_query': search_query
+    }
+    return render(request, 'submissions.html', context)
+def submission_list(request):
+    search_query = request.GET.get('search_query', '')
+    submission_list = Submission.objects.filter(title__icontains=search_query) if search_query else Submission.objects.all()
+    paginator = Paginator(submission_list, 10) # Show 10 submissions per page.
+    page_number = request.GET.get('page')
+    submissions = paginator.get_page(page_number)
+    context = {
+        'submissions': submissions,
+        'search_query': search_query
+    }
+    return render(request, 'projects/submissions.html', context)
 def python_terminal(request):
     return render(request, 'terminal.html')
 

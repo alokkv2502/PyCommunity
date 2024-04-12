@@ -1,0 +1,64 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<!-- Main Section -->
+<main class="code-submissions">
+    <section class="hero-section text-center">
+        <div class="container container--narrow">
+            <div class="hero-section__box">
+                <h2>Browse <span>User Submissions</span></h2>
+            </div>
+
+            <div class="hero-section__search">
+                <form id='searchForm' class="form" action="{% url 'submissions' %}" method="get">
+                    <div class="form__field">
+                        <label for="formInput#search">Search by Code Title</label>
+                        <input class="input input--text" id="formInput#search" type="text" name="search_query"
+                            placeholder="Search by Code Title" value="{{search_query}}" />
+                    </div>
+
+                    <input class="btn btn--sub btn--lg" type="submit" value="Search" />
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Submissions List -->
+    <section class="submissionList">
+        <div class="container">
+            <div class="grid grid--three">
+
+                {% for submission in submissions %}
+                <div class="column">
+                    <div class="card submission">
+                        <a href="{% url 'submission_detail' submission.id %}" class="submission">
+                            <div class="card__body">
+                                <h3 class="submission__title">{{submission.title}}</h3>
+                                <p><a class="submission__author" href="{% url 'user-profile' submission.owner.id %}">By
+                                        {{submission.owner.name}}</a>
+                                </p>
+                                <p class="submission--rating">
+                                    <span style="font-weight: bold;">{{submission.vote_ratio}}%</span> Positive
+                                    Feedback ({{submission.vote_total}}) Vote{{submission.vote_total|pluralize:"s"}}
+                                </p>
+                                <div class="submission__tags">
+                                    {% for tag in submission.tags.all %}
+                                    <span class="tag tag--pill tag--main">
+                                        <small>{{tag}}</small>
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+    {% include 'pagination.html' with queryset=submissions custom_range=custom_range %}
+
+</main>
+
+{% endblock %}
